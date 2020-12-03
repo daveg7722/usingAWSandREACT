@@ -1,0 +1,65 @@
+.show {    
+    position:absolute;
+    display: flexbox;
+    flex-direction: column;
+    top: 15%;
+    left: 72%;
+    width: 10%;
+    height: 70%;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.grid {
+    display: flex;
+    position:absolute;
+    top: 28%;
+    left: 72.5%;
+    width: 25%;
+    z-index: 99;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    box-sizing: border-box;
+}
+
+.item {
+    background-color: gray;
+    width: 20%;
+    color: black;
+    border: 1px solid white;
+    text-align: center;
+}
+
+.item:hover {
+    background-color: white;
+    color: gray;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.hide {
+    font-size: 1.2em;
+    color: white; 
+    background-color:gray;
+}
+
+.hide:hover {
+    color: gray;
+    background-color: white;
+}
+
+.itemSelected {
+    background-color: white;
+    width: 20%;
+    color: gray;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.letter {
+    display: block;
+    margin: auto;
+}

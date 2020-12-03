@@ -1,0 +1,44 @@
+@keyframes navigation {
+    from {top:-300px;opacity:0;} 
+    to{top:0;opacity:1;}
+}
+
+.nav {    
+    background-color: blue;
+    animation-name: navigation;
+    animation-duration: 0.4s;
+}
+
+.container {
+    position: fixed;
+    top: 0;
+    height: 5%;
+    z-index: 100;
+    width: 100%;
+}
+
+.navbar {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    top:0;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+    line-height: 0;
+    border-bottom: 2px solid black;
+    background-color: white;
+}
+
+.home {
+    margin-left: 2vw;
+    color: gray;
+}
+
+.profile {
+    margin-right: 2vw;
+    color: gray;
+}

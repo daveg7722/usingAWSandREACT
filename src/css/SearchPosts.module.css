@@ -1,0 +1,79 @@
+.search {
+    position: relative;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 10%;
+}
+
+.button {
+    position: absolute;
+    top: 15%;
+    left: 39.5%;
+    width: 10%;
+    height: 70%;
+    /*padding:0.35em 1.2em;*/
+    border:0.1em solid #FFFFFF;
+    margin:0 0.3em 0.3em 0;
+    border-radius:0.25em;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:antiquewhite;
+    background-color: gray;
+    text-align:center;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.button:hover{
+    color:#000000;
+    background-color:#FFFFFF;
+}
+/* @media all and (max-width:30em){
+    button{
+        display:block;
+        margin:0.4em auto;
+    }
+} */
+
+.input {
+    position: absolute;
+    padding-left: 2%;
+    padding-right: 10%;
+    width: 50%;
+    left: 0%;
+    top: 10%;
+    height: 80%;
+    border: 2px solid gray;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.dropDown {
+    position: absolute;
+    top: 15%;
+    width: 10%;
+    left: 60%;
+    height: 70%;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.reset {
+    position: absolute;
+    left: 53%;
+    width: 5%;
+    top: 15%;
+}
+
+.error {
+    width: 100%;
+}
+
+.errorMessage {
+    margin: auto;
+    text-align: center;
+    color: red;
+}
