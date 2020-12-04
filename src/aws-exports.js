@@ -13,7 +13,10 @@ const awsmobile = {
     "aws_user_pools_web_client_id": "45drpkt34tg186mk8bqpkkh83m",
     "oauth": {},
     "aws_user_files_s3_bucket": "profile13733-dev",
-    "aws_user_files_s3_bucket_region": "us-east-2"
+    "aws_user_files_s3_bucket_region": "us-east-2",
+    "aws_content_delivery_bucket": "blogfinal-20201203021228-hostingbucket-dev",
+    "aws_content_delivery_bucket_region": "us-east-2",
+    "aws_content_delivery_url": "http://blogfinal-20201203021228-hostingbucket-dev.s3-website.us-east-2.amazonaws.com"
 };
 
 

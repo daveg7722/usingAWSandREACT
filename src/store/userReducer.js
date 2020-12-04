@@ -2,7 +2,8 @@ const initialState = {
     username: "",
     id: "",
     email: "",
-    phone_number: ""
+    phone_number: "",
+    signedIn: false
 }
 
 const userReducer = (state = initialState, action) => {
@@ -12,7 +13,8 @@ const userReducer = (state = initialState, action) => {
             console.log(JSON.stringify(user));
             return {
                 ...state,
-                ...user
+                ...user,
+                signedIn: true
             };
         case 'REMOVE_USER' :
             console.log('initial state ' + initialState)

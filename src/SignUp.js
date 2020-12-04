@@ -1,9 +1,7 @@
 import React from 'react'
 import Button from './Button'
-import {Link, useRouteMatch} from 'react-router-dom'
 
 const SignUp = ( {updateFormState, signUp}) => {
-    const {path} = useRouteMatch();
 
     const style = {
         input: {
@@ -30,13 +28,7 @@ const SignUp = ( {updateFormState, signUp}) => {
                 onChange={e => {e.persist(); updateFormState(e)}}
                 placeholder='email'
             />,
-            <Button onClick={signUp}>Sign Up</Button>,
-            // <p >
-            //     Already have an account? 
-            //     <Link to={`${path}/signin`}> 
-            //         Sign In
-            //     </Link>
-            // </p>
+            <Button onClick={signUp}>Sign Up</Button>
         ]
     );
 }

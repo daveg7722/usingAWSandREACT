@@ -1,6 +1,7 @@
 import { API, graphqlOperation, Auth} from 'aws-amplify';
 import { createPost } from '../graphql/mutations';
 import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux'
 
 import * as classes from '../css/CreatePost.module.css'
 
@@ -40,22 +41,23 @@ const CreatePost = (props) => {
 
     const handleAddPost = async (event) => {
         event.preventDefault();
+        if(props.signedIn) {
+            const input = {
+                postOwnerId: post.postOwnerId,
+                postOwnerUsername: post.postOwnerUsername,
+                postTitle: post.postTitle,
+                postBody: post.postBody,
 
-        const input = {
-            postOwnerId: post.postOwnerId,
-            postOwnerUsername: post.postOwnerUsername,
-            postTitle: post.postTitle,
-            postBody: post.postBody,
+                createdAt: new Date().toISOString()
+            }
+            console.log(JSON.stringify(input));
+            await API.graphql(graphqlOperation(createPost, {input}));
 
-            createdAt: new Date().toISOString()
+            setPost({
+                ...post,
+                postTitle:"",
+                postBody:""});
         }
-        console.log(JSON.stringify(input));
-        await API.graphql(graphqlOperation(createPost, {input}));
-
-        setPost({
-            ...post,
-            postTitle:"",
-            postBody:""});
 
     };
 
@@ -88,4 +90,10 @@ const CreatePost = (props) => {
     );
 };
 
-export default CreatePost;
+const fromState = state => {
+    return {
+        signedIn: state.user.signedIn
+    };
+};
+
+export default connect(fromState)(CreatePost);

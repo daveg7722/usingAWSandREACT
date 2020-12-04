@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import {connect} from 'react-redux'
 import { API, graphqlOperation } from 'aws-amplify';
 import { getPost } from '../graphql/queries';
 import { onCreateComment, onUpdatePost, onUpdateComment, onDeleteComment } from '../graphql/subscriptions';
@@ -16,7 +17,7 @@ import { faCheckDouble, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 
 let updatePostListener, createPostCommentListener, updateCommentListener, deleteCommentListener;
 
-const DisplayPost = ({selectedPost}) => {
+const DisplayPost = ({selectedPost, username}) => {
     const [post, setPost] = useState(null);
     const {id} = useParams();  
     const history = useHistory();
@@ -25,6 +26,7 @@ const DisplayPost = ({selectedPost}) => {
         body.className = classes.body;
 
         if(!selectedPost){
+            console.log("in not selected post");
             (async () => {            
                 await API.graphql(graphqlOperation(getPost, {id})).then(res => {
                     setPost(()=> res.data.getPost);
@@ -110,17 +112,16 @@ const DisplayPost = ({selectedPost}) => {
                     <div style={{display:'flex', flexDirection: 'row', justifyContent:'space-between', alignItems:'center', marginTop:'4vh'}}>
                         <FontAwesomeIcon icon={faChevronLeft}  onClick={() => history.goBack()}
                         style={{backgroundColor:'white', color:'gray', fontSize: '3em', textAlign:'center', borderRadius:'8px'}}/>
-                        <span><DeletePost postId={post.id}/> <EditPost post={post}/></span>
+                        {(username === post.postOwnerUsername) && <span><DeletePost postId={post.id}/> <EditPost post={post}/></span>}
                     </div>          
                     <div style={{backgroundColor:'rgba(0, 0, 0, 0.70)', borderRadius:'5px', marginTop: '5vh', width: '90%'}}>
-                        <div style={{backgroundColor:'rgb(255, 255, 255)', border:'1px solid black', borderRadius:'5px', padding: '2vh 2vw', position: 'relative', left:'1vw', bottom: '1vh'}}> 
+                        <div style={{backgroundColor:'rgb(255, 255, 255)', border:'1px solid black', borderRadius:'5px', padding: '2vh 2vw', position: 'relative', left:'1vw', bottom: '1vh', overflowWrap:'break-word'}}> 
                             <h2 style={{marginLeft:'auto', marginRight:'auto', width:'100%'}}>{post.postTitle}</h2>
                         
                             <p>{post.postBody}</p>
                             <p> - {post.postOwnerUsername} at {new Date(post.createdAt).toLocaleDateString()}</p>
                         </div>
                     </div>
-                    <div><FontAwesomeIcon icon={faCheckDouble} style={{marginTop:'2vh', backgroundColor:'white', color:'black', borderRadius: "5px", fontSize:'2em'}}/></div>
                     <div style={{position:'relative'}}><CreateCommentPost postId={post.id}/></div>
                 </div>
                 <div className={classes.comments}>
@@ -137,4 +138,14 @@ const DisplayPost = ({selectedPost}) => {
     }   
 }
 
-export default DisplayPost;
+const fromState = state => {
+    return {
+        username: state.user.username,
+        id: state.user.id,
+        email: state.user.email,
+        phone_number: state.user.phone_number,
+        signedIn: state.user.signedIn
+    };
+};
+
+export default connect(fromState)(DisplayPost);

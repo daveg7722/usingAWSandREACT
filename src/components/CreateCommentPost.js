@@ -1,6 +1,7 @@
 import { API, Auth, graphqlOperation} from 'aws-amplify';
 import React, {useState, useEffect} from 'react';
 import { createComment } from '../graphql/mutations';
+import {connect} from 'react-redux';
 
 import * as classes from '../css/CreateCommentPost.module.css'
 
@@ -36,21 +37,23 @@ const CreateCommentPost = props => {
 
     const addCommenthandler = async (event) => {
         event.preventDefault();
-        const input = {
-            postId: props.postId,
-            commentOwnerId: comment.commentOwnerId,
-            commentOwnerUsername: comment.commentOwnerUsername,
-            content: comment.content,
-            createdAt: new Date().toISOString()
-        }
-        await API.graphql(graphqlOperation(createComment, {input}));
-
-        setComment(comment => {
-            return {
-                ...comment,
-                content: ""
+        if(props.signedIn) {
+            const input = {
+                postId: props.postId,
+                commentOwnerId: comment.commentOwnerId,
+                commentOwnerUsername: comment.commentOwnerUsername,
+                content: comment.content,
+                createdAt: new Date().toISOString()
             }
-        });
+            await API.graphql(graphqlOperation(createComment, {input}));
+
+            setComment(comment => {
+                return {
+                    ...comment,
+                    content: ""
+                }
+            });
+        }
     };
 
     return (
@@ -77,4 +80,10 @@ const CreateCommentPost = props => {
     );
 }
 
-export default CreateCommentPost;
+const fromState = state => {
+    return {
+        signedIn: state.user.signedIn
+    };
+};
+
+export default connect(fromState)(CreateCommentPost);

@@ -53,6 +53,7 @@
 
 .dropDown {
     position: absolute;
+    margin-left: 2vw;
     top: 15%;
     width: 10%;
     left: 60%;
@@ -63,7 +64,8 @@
 
 .reset {
     position: absolute;
-    left: 53%;
+    margin-left: 2vw;
+    left: 50%;
     width: 5%;
     top: 15%;
 }

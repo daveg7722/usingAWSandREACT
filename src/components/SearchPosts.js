@@ -125,7 +125,7 @@ const SearchPosts = props => {
                     <option value="postOwnerUsername">user</option>
                 </select>
                 {(search.query !== "" || search.sortBy !== "" || search.filter !== "") && <div className={classes.reset} onClick={resetForm}>
-                        <FontAwesomeIcon icon={faTimesCircle} style={{fontSize: '2.5em', color: 'gray', backgroundColor:'white'}} />
+                        <FontAwesomeIcon icon={faTimesCircle} style={{fontSize: '2.0em', color: 'gray', backgroundColor:'white'}} />
                     </div>}
                 {search.sortBy === "postOwnerUsername" && <BeginsWith setFilter={setFilter} close={reset} />}
             </div>

@@ -33,11 +33,9 @@ const Profile = (props) => {
                     email: userInfo.email
                 }
                 setUser(user);
-                setUserChecked(true);
                 console.log("Loading in user " + JSON.stringify(userInfo));
             } catch (err) { 
                 console.log('in catch of check user')
-                setUserChecked(true);
             }
         })();
         }
@@ -48,16 +46,12 @@ const Profile = (props) => {
             }
         })
     }, [setUser, props.username])
-
-    const [userChecked, setUserChecked] = useState(false)
-
     
 
     async function signOut() {
         await Auth.signOut().catch(err => console.log('error signing out: ', err))
         props.removeUser();
         console.log("signing out")
-        setUserChecked(true);
     }
     const setUserInfo = (userInfo) => {
         const user = {
@@ -69,7 +63,7 @@ const Profile = (props) => {
         setUser(user);
         history.push('/profile')
     }
-    if (props.username && userChecked) {
+    if (props.signedIn) {
         return (
             <Container classes={classes.container}>
                 <h1>Profile</h1>
@@ -79,10 +73,10 @@ const Profile = (props) => {
                 <Button onClick={signOut}>Sign Out</Button>
             </Container>
         );
-    } else if (userChecked) {
+    } else if (!props.signedIn) {
         return <Container classes={classes.container}><Form setUserInfo={setUserInfo} /></Container>
     } else {
-        return <p>...loading</p>
+    return <p>...loading </p>
     }
 
 }
@@ -92,7 +86,8 @@ const fromState = state => {
         username: state.user.username,
         id: state.user.id,
         email: state.user.email,
-        phone_number: state.user.phone_number
+        phone_number: state.user.phone_number,
+        signedIn: state.user.signedIn
     };
 };
 

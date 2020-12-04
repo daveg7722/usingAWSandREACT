@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import {Auth} from 'aws-amplify'
 import SignIn from './SignIn'
 import SignUp from './SignUp'
@@ -6,7 +6,7 @@ import ConfirmSignUp from './ConfirmSignUp'
 import ForgotPassword from './ForgotPassword'
 import ForgotPasswordSubmit from './ForgotPasswordSubmit'
 
-import {Route, Link, useRouteMatch, Switch, Redirect, useLocation} from 'react-router-dom';
+import {Route, Link, useRouteMatch, Switch, Redirect, useLocation, useHistory} from 'react-router-dom';
 
 async function signIn({username, password}, setUserInfo) {
     try {
@@ -17,50 +17,43 @@ async function signIn({username, password}, setUserInfo) {
 
     } catch (err) {
         console.log(err);
-       setUserInfo(null)
+        setUserInfo(null)
     }
 }
 
-async function signUp({username, password, email}, updateFormType) {
-    try {
-        await Auth.signUp({
-            username, password, attributes: {email}
-        })
-        updateFormType('confirmSignUp')
-        console.log('Sign up a sucess!')
-    } catch (err) {
-        console.log('error signing up...', err)
-    }
-}
+// async function signUp({username, password, email}, updateFormType) {
+//     try {
+//         await Auth.signUp({
+//             username, password, attributes: {email}
+//         });
+//     } catch (err) {
+//         console.log('error signing up...', err)
+//     }
+// }
 
-async function confirmSignUp({username, confirmationCode}, updateFormType) {
-    try {
-        await Auth.confirmSignUp(username, confirmationCode)
-        updateFormType('signIn')
-    } catch (err) {
-        console.log("Error signing up! ", err)
-    }
-}
+// async function confirmSignUp({username, confirmationCode}, updateFormType) {
+//     try {
+//         await Auth.confirmSignUp(username, confirmationCode);
+//     } catch (err) {
+//         console.log("Error signing up! ", err)
+//     }
+// }
 
-async function forgotPassword({username}, updateFormType) {
-    try {
-        await Auth.forgotPassword(username)
-        updateFormType('forgotPasswordSubmit')
-    } catch (err) {
-        console.log('error submitting username to reset password...', err)
-    }
-}
+// async function forgotPassword({username}, updateFormType) {
+//     try {
+//         await Auth.forgotPassword(username);
+//     } catch (err) {
+//         console.log('error submitting username to reset password...', err)
+//     }
+// }
 
-async function forgotPasswordSubmit(
-    { username, confirmationCode, password}, updateFormType
-) {
-    try {
-        await Auth.forgotPasswordSubmit(username, confirmationCode, password)
-        updateFormType('signIn')
-    } catch (err) {
-        console.log('error updating password...:', err)
-    }
-}
+// async function forgotPasswordSubmit({ username, confirmationCode, password}, updateFormType) {
+//     try {
+//         await Auth.forgotPasswordSubmit(username, confirmationCode, password)
+//     } catch (err) {
+//         console.log('error updating password...:', err)
+//     }
+// }
 
 const initialFormState = {
     username: '', password: '', email: '', confirmationCode: ''
@@ -71,16 +64,52 @@ const Form = ({setUserInfo}) => {
     const {pathname} = useLocation();
     const [formType, updateFormType] = useState('signin')
     const [formState, updateFormState] = useState(initialFormState)
+    let history = useHistory();
+
+    const signUp = useCallback(async ({username, password, email}) => {
+        try {
+            await Auth.signUp({
+                username, password, attributes: {email}
+            });
+            history.push("confirmsignup");
+        } catch (err) {
+            console.log('error signing up...', err)
+        }
+    }, [history])
+
+    const confirmSignUp = useCallback(async({username, confirmationCode}) => {
+            try {
+                await Auth.confirmSignUp(username, confirmationCode);
+                history.push('signin');
+            } catch (err) {
+                console.log("Error signing up! ", err)
+            }
+    }, [history]);
+
+    const forgotPassword = useCallback( async ({username}) => {
+        try {
+            await Auth.forgotPassword(username);
+            history.push('forgotpasswordsubmit')
+        } catch (err) {
+            console.log('error submitting username to reset password...', err)
+        }
+    }, [history]);
     
+    const forgotPasswordSubmit = useCallback(async ({ username, confirmationCode, password}) => {
+        try {
+            await Auth.forgotPasswordSubmit(username, confirmationCode, password)
+            history.push('signin');
+        } catch (err) {
+            console.log('error updating password...:', err)
+        }
+    }, [history]);
+
     useEffect(()=>{
+        console.log("in effect")
         let newFormType = pathname.substring(9, pathname.length);
+        console.log("form type is now " + newFormType);
         updateFormType(newFormType)
-    }, [updateFormType, pathname])
-
-    useEffect(()=>{
-        console.log("mounting form");
-    }, [])
-
+    }, [pathname])
 
 
     function updateForm(event) {
@@ -89,7 +118,7 @@ const Form = ({setUserInfo}) => {
         }
         updateFormState(newFormState)
     }  
-    
+   
    
     return (
         <>  
@@ -100,27 +129,28 @@ const Form = ({setUserInfo}) => {
                         updateFormState={e=> updateForm(e)}
                     />
                 </Route>
-                <Route  path={`${url}/signup`}><SignUp
-                        signUp={()=> signUp(formState, updateFormType)}
+                <Route  path={`${url}/signup`}>
+                    <SignUp
+                        signUp={()=> signUp(formState)}
                         updateFormState={e=> updateForm(e)}
                     /> 
                 </Route>
                 <Route  path={`${url}/confirmsignup`}>
                     <ConfirmSignUp
-                        confirmSignUp={()=>confirmSignUp(formState, updateFormType)}
+                        confirmSignUp={()=>confirmSignUp(formState)}
                         updateFormState={e=> updateForm(e)}
                     />    
                 </Route>
                   
                 <Route  path={`${url}/forgotpassword`}>        
                     <ForgotPassword
-                        forgotPassword={() => forgotPassword(formState, updateFormType)}
+                        forgotPassword={() => forgotPassword(formState)}
                         updateFormState={e => updateForm(e)}
                     />
                 </Route>  
                 <Route  path={`${url}/forgotpasswordsubmit`}>
                     <ForgotPasswordSubmit
-                        forgotPasswordSubmit={() => forgotPasswordSubmit(formState, updateFormType)}
+                        forgotPasswordSubmit={() => forgotPasswordSubmit(formState)}
                         updateFormState={e => updateForm(e)}
                     />
                  </Route>  
@@ -133,7 +163,7 @@ const Form = ({setUserInfo}) => {
                     <p >
                         Already have an account? 
                         <Link to={`${path}/signin`}
-                            onClick={() => updateFormType('signin')}
+                           //onClick={() => updateFormType('signin')}
                         > Sign In</Link>
                     </p>
                 )
@@ -143,12 +173,12 @@ const Form = ({setUserInfo}) => {
                     <div>
                         <p >
                             Need an account? <Link to={`${path}/signup`}
-                                onClick={()=> updateFormType('signup')}
+                                //onClick={()=> updateFormType('signup')}
                             > Sign Up</Link>
                         </p>
                         <p >
                             Forget your password? <Link to={`${path}/forgotpassword`}
-                                onClick={() => updateFormType('forgotpassword')}
+                               // onClick={() => updateFormType('forgotpassword')}
                             > Reset Password</Link>
                         </p>
                     </div>

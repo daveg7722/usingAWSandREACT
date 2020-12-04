@@ -1,6 +1,7 @@
 .show {    
     position:absolute;
     display: flexbox;
+    margin-left: 2vw;
     flex-direction: column;
     top: 15%;
     left: 72%;
